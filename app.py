@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask import render_template
 from flask_migrate import Migrate
+from flask import request
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -28,9 +29,27 @@ class Assistant(db.Model):
 def assistants_create():
     return render_template("index.html")
 
-@app.route("/assistants", methods=["GET"])
+@app.route("/assistants", methods=["GET", "POST"])
 def assistants():
-    return render_template("index.html")
+    if request.method == "GET":
+        assistantts_all = Assistant.query.all()
+        return render_template("assistants.html", assistants=assistantts_all, message=None)
+    else:
+        if request.form:
+            assistant = Assistant(name=request.form.get("name"), surname=request.form.get("surname"))
+            db.session.add(assistant)
+            db.session.commit()
+
+        assistantts_all = Assistant.query.all()
+        return render_template("assistants.html", assistants=assistantts_all, message="New assistant added!")
+
+@app.route("/assistants/<int:id>", methods=["PUT", "DELETE"])
+def assistants_changes(id):
+    if request.method == "DELETE":
+        assistant_to_delete = Assistant.query.get(id)
+        db.session.delete(assistant_to_delete)
+        db.session.commit()
+        return render_template("assistants.html")
 
   
 if __name__ == "__main__":
