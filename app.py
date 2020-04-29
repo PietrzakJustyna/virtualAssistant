@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
@@ -16,6 +16,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = database_file
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = "secret"
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -51,12 +52,14 @@ def assistants():
         return render_template("assistants.html", assistants=assistantts_all, message=None)
     elif request.method == "POST":
         if request.form:
-            
             if 'file' not in request.files:
                 photo_path = "./static/uploads/default.jpg"
         file = request.files.get("photo")
         if file.filename == '':
             photo_path = "./static/uploads/default.jpg"
+        if not allowed_file(file.filename):
+            flash('Wrong file format. Accepted formats: png, jpg, jpeg.')
+            return redirect(url_for("assistants_create"))
         if file and allowed_file(file.filename):
             photo_name, ext = os.path.splitext(file.filename)
             new_photo_name = "{}.{}".format(id_generator(), ext)
