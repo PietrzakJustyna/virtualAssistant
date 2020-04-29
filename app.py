@@ -53,10 +53,10 @@ def assistants():
         if request.form:
             
             if 'file' not in request.files:
-                photo_path = "./static/uploads/default.jpeg"
+                photo_path = "./static/uploads/default.jpg"
         file = request.files.get("photo")
         if file.filename == '':
-            photo_path = "./static/uploads/default.jpeg"
+            photo_path = "./static/uploads/default.jpg"
         if file and allowed_file(file.filename):
             photo_name, ext = os.path.splitext(file.filename)
             new_photo_name = "{}.{}".format(id_generator(), ext)
@@ -82,6 +82,9 @@ def assistants():
 def assistants_changes(id):
     if request.method == "DELETE":
         assistant_to_delete = Assistant.query.get(id)
+        if "default" not in assistant_to_delete.photo_path:
+            os.remove(assistant_to_delete.photo_path)
+
         db.session.delete(assistant_to_delete)
         db.session.commit()
         return render_template("assistants.html")
