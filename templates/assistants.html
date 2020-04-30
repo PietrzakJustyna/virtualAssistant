@@ -1,4 +1,6 @@
-<html>
+{% extends "base.html" %}
+{% block content %}
+
     <body>
       <h1>Assistants</h1>
      {% if message %}
@@ -36,6 +38,5 @@
       </script>
 
     </body>
-    
-  </html>
-  
+
+    {% endblock %}

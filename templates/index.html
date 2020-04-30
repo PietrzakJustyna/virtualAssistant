@@ -1,4 +1,5 @@
-<html>
+{% extends "base.html" %}
+{% block content %}
   <body>
           {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -9,18 +10,26 @@
           </ul>
         {% endif %}
       {% endwith %}
+  <div class="container">
+    <fieldset>
+      <h1>Add new assistant</h1>
+      
     <form method="POST" action="/assistants" enctype="multipart/form-data">
-      <input type="text" name="name" required="True" placeholder="Name">
-      <input type="text" name="surname" required = "True" placeholder="Surname">
+      <input type="text" name="name" required="True" placeholder="Name" class="ghost-input">
+      <input type="text" name="surname" required = "True" placeholder="Surname" class="ghost-input">
+      <input  name="photo" type="file" class="inputfile" id="file" accept="image/*">
+      <label class="upload-label" for="file">Choose profile photo <i class="fas fa-file-upload"></i></label>
+
+    <div class="selectdiv">
       <select id="sel" name="job" required = "True">
         <option value="">-- Select --</option>
       </select>
-      <input type="file" name="photo">
-      <input type="submit" value="Add">
+    </div>
+
+      <button type="submit" class="ghost-button submit-button" value="Send"> Submit </button>
     </form>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-    crossorigin="anonymous"></script>
+  </fieldset>
+  </div>
 
     <script>
       document.addEventListener("DOMContentLoaded", function (event) {
@@ -36,8 +45,15 @@
         $('#sel').change(function () {
             $('#msg').text('Selected Item: ' + this.options[this.selectedIndex].text);
         });
+        
+
+        $("#file").change(function() {
+        const name = this.files[0]["name"];
+        console.log(name)
+        $(".upload-label").html("Chosen file: " + name);
+  });
+
       });
     </script>
   </body>
-
-</html>
+{% endblock %}
