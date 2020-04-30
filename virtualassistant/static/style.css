@@ -75,7 +75,7 @@
     transition:border-bottom 0.5s;
     border-bottom: 1px solid black;
   }
-  
+
   .ghost-input:focus {
     transition:border-bottom 0.5s;
     border-bottom: 1px solid black;
@@ -237,4 +237,18 @@
 
   .selectdiv select:hover{
       border:1px solid black;
+  }
+
+  img{
+      padding: 30px;
+  }
+
+  tr:hover {
+    background-color: #e2e6eb;
+  }
+
+  table{
+      width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: x-large;
   }

@@ -1,10 +1,12 @@
-from models import Assistant
-from app import app, db
+from virtualassistant.models import Assistant
+from virtualassistant import app, db
 import os
 from flask import Flask, render_template, request, redirect, flash, url_for
 import string
 import random
-import config
+from virtualassistant import config
+from PIL import Image
+
 
 ALLOWED_EXTENSIONS = config.ALLOWED_EXTENSIONS
 

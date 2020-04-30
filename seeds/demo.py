@@ -1,8 +1,7 @@
 from flask_seeder import Seeder, Faker, generator
 import sys
 sys.path.append("..")
-print(sys.path)
-from app import Assistant
+from virtualassistant.models import Assistant
 
 # All seeders inherit from Seeder
 class DemoSeeder(Seeder):
