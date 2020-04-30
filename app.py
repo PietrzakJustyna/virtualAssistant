@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.utils import secure_filename
+from flask_seeder import FlaskSeeder
 from PIL import Image
 import string
 import random
@@ -20,6 +20,8 @@ app.secret_key = "secret"
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+seeder = FlaskSeeder()
+seeder.init_app(app, db)
 
 
 class Assistant(db.Model):
