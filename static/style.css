@@ -54,7 +54,7 @@
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    color: #4b545f;
+    color: rgb(117, 117, 117);
     background: #fff;
     font-family: Arial, Helvetica, sans-serif;
     padding: 10px 15px;
@@ -74,8 +74,8 @@
   .ghost-input:hover {
     transition:border-bottom 0.5s;
     border-bottom: 1px solid black;
-    color:black;
   }
+  
   .ghost-input:focus {
     transition:border-bottom 0.5s;
     border-bottom: 1px solid black;
@@ -143,7 +143,6 @@
   .inputfile + label:hover {
     cursor: pointer;
     border-bottom: 1px solid black;
-    color:black;
   }
   
   .inputfile:focus + label,
@@ -197,7 +196,7 @@
     content: '<>';
     font-family: Arial, Helvetica, sans-serif;
     font: 17px ;
-    color: #333;
+    color:rgb(117, 117, 117);
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
     -ms-transform: rotate(90deg);
@@ -228,7 +227,7 @@
     padding: 0px 24px;
     font-size: 25px;
     line-height: 1.75;
-    color: #333;
+    color: rgb(117, 117, 117);
     background-color: #ffffff;
     background-image: none;
     border: 1px solid #cccccc;
