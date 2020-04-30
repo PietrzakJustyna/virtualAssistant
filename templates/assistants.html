@@ -3,17 +3,22 @@
 
     <body>
       <h1>Assistants</h1>
+      <p>
      {% if message %}
       {{message}}
       {% endif %}
+      </p>
       {% for assistant in assistants %}
         <p>
           <img src="{{ assistant.photo_path }}"> <br/>
           Name: {{assistant.name}} <br/>
           Surname: {{assistant.surname}} <br/>
-          Job: {{assistant.job}}
+          Job: {{assistant.job}}<br/>
 
+          {% if request.method == "GET" %}
           <button class="delete" data-target="/" data-method="DELETE" data-disabled="true" data-id="{{assistant.id}}">Delete Ressource</button>
+          {% endif %}
+
         </p>
       {% endfor %}
       <script src="https://code.jquery.com/jquery-3.4.1.min.js"
