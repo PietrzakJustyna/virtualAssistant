@@ -7,8 +7,12 @@
       {{message}}
       {% endif %}
       {% for assistant in assistants %}
-        <p>{{assistant.name}} {{assistant.surname}} {{assistant.job}}
-          <img src="{{ assistant.photo_path }}">
+        <p>
+          <img src="{{ assistant.photo_path }}"> <br/>
+          Name: {{assistant.name}} <br/>
+          Surname: {{assistant.surname}} <br/>
+          Job: {{assistant.job}}
+
           <button class="delete" data-target="/" data-method="DELETE" data-disabled="true" data-id="{{assistant.id}}">Delete Ressource</button>
         </p>
       {% endfor %}

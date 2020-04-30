@@ -149,7 +149,6 @@
   .inputfile:focus + label,
   .inputfile + label:hover:after {
     
-  content:" (click to upload file)";
   color:black;
   }
   
