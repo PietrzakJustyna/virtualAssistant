@@ -72,7 +72,9 @@ class BasicTests(unittest.TestCase):
 
             assistants_after = len(Assistant.query.all())
             new_assistant = Assistant.query.filter_by(name=data["name"], surname=data["surname"]).first()
-            os.remove((new_assistant.photo_path).replace(".", "virtualassistant", 1))
+            new_file_path = new_assistant.photo_path.replace(".", "virtualassistant", 1)
+            if os.path.exists(new_file_path):
+                os.remove(new_file_path)
             self.assertEqual(assistants_after, assistants_before + 1)
 
 
