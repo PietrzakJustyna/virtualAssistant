@@ -10,6 +10,7 @@ from PIL import Image
 
 ALLOWED_EXTENSIONS = config.ALLOWED_EXTENSIONS
 
+
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -18,13 +19,16 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+
 @app.route("/", methods=["GET"])
 def home():
     return render_template("home.html")
 
+
 @app.route("/assistants/create", methods=["GET"])
 def assistants_create():
     return render_template("create_form.html")
+
 
 @app.route("/assistants", methods=["GET", "POST"])
 def assistants():
@@ -44,23 +48,26 @@ def assistants():
         if file and allowed_file(file.filename):
             photo_name, ext = os.path.splitext(file.filename)
             new_photo_name = "{}{}".format(id_generator(), ext)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name))
-            photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
+            file.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], new_photo_name))
+            photo_path = os.path.join(
+                app.config['UPLOAD_FOLDER'], new_photo_name)
             im = Image.open(photo_path)
             size = (128, 128)
             im.thumbnail(size)
             im.save(photo_path)
 
-        assistant = Assistant(name=request.form.get("name"), 
-                                surname=request.form.get("surname"), 
-                                job=request.form.get("job"),
-                                photo_path = "./static/uploads/" + new_photo_name)
+        assistant = Assistant(name=request.form.get("name"),
+                              surname=request.form.get("surname"),
+                              job=request.form.get("job"),
+                              photo_path="./static/uploads/" + new_photo_name)
 
         db.session.add(assistant)
         db.session.commit()
 
         assistantts_all = Assistant.query.all()
         return render_template("assistants.html", assistants=assistantts_all, message="New assistant added!")
+
 
 @app.route("/assistants/<int:id>", methods=["PUT", "DELETE"])
 def assistants_changes(id):

@@ -1,59 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <body>
-      <h1>Assistants</h1>
-      <p>
-     {% if message %}
-      {{message}}
+<body>
+  <h1>Assistants</h1>
+  <p>
+    {% if message %}
+    {{message}}
+    {% endif %}
+  </p>
+  <table>
+    {% for assistant in assistants %}
+    <tr>
+      <td>
+        <img src="{{ assistant.photo_path }}" style="float: left;">
+      </td>
+      <td>
+        Name: {{assistant.name}} <br />
+        Surname: {{assistant.surname}} <br />
+        Job: {{assistant.job}}<br />
+      </td>
+
+      {% if request.method == "GET" %}
+      <td>
+        <button class="delete ghost-button" data-target="/" data-method="DELETE" data-disabled="true"
+          data-id="{{assistant.id}}">Delete profile</button>
+        <button class="update ghost-button" data-target="/" data-method="DELETE" data-disabled="true"
+          data-id="{{assistant.id}}">Update profile</button>
+      </td>
       {% endif %}
-      </p>
-      <table>
-      {% for assistant in assistants %}
-          <tr>
-            <td>
-          <img src="{{ assistant.photo_path }}" style="float: left;">
-          </td>
-          <td>
-          Name: {{assistant.name}} <br/>
-          Surname: {{assistant.surname}} <br/>
-          Job: {{assistant.job}}<br/>
-          </td>
-        
-          {% if request.method == "GET" %}
-          <td>
-          <button class="delete ghost-button" data-target="/" data-method="DELETE" data-disabled="true" data-id="{{assistant.id}}">Delete profile</button>
-          <button class="update ghost-button" data-target="/" data-method="DELETE" data-disabled="true" data-id="{{assistant.id}}">Update profile</button>
-          </td>
-          {% endif %}
-          </tr>
-      {% endfor %}
-      </table>
-      <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"></script>
+    </tr>
+    {% endfor %}
+  </table>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
-      <script>
-          document.addEventListener("DOMContentLoaded", function (event) {
-            var buttons_list = Array.from(document.getElementsByClassName("delete"));
-            buttons_list.forEach(element => {
-              element.addEventListener("click", function () {
-                var assistant_id = element.getAttribute("data-id");
-                if (confirm("Are you sure you want to remove this record?")) {
-                  $.ajax({
-                    url: '/assistants/' + assistant_id,
-                    method: 'DELETE',
-                  })
-                    .done(function () {
-                      console.log('deleted');
-                      window.location.reload(true); 
-                    });
-                  }
-                })
-              })
-            });
-      </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+      var buttons_list = Array.from(document.getElementsByClassName("delete"));
+      buttons_list.forEach(element => {
+        element.addEventListener("click", function () {
+          var assistant_id = element.getAttribute("data-id");
+          if (confirm("Are you sure you want to remove this record?")) {
+            $.ajax({
+              url: '/assistants/' + assistant_id,
+              method: 'DELETE',
+            })
+              .done(function () {
+                console.log('deleted');
+                window.location.reload(true);
+              });
+          }
+        })
+      })
+    });
+  </script>
 
-    </body>
+</body>
 
-    {% endblock %}
+{% endblock %}

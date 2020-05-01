@@ -1,20 +1,19 @@
+from virtualassistant.models import Assistant
+from virtualassistant.config import project_dir
+from virtualassistant import app, db
 import os
 import sys
 import unittest
 
 TEST_DB = 'test.db'
 
-from virtualassistant import app, db
-from virtualassistant.config import project_dir
-from virtualassistant.models import Assistant
- 
- 
+
 class BasicTests(unittest.TestCase):
- 
+
     ############################
     #### setup and teardown ####
     ############################
- 
+
     # executed prior to each test
     def setUp(self):
         app.config['TESTING'] = True
@@ -25,34 +24,42 @@ class BasicTests(unittest.TestCase):
         db.drop_all()
         db.create_all()
 
-        fake_assistant1 = Assistant(name= "Ana",
-                                    surname= "Markez",
-                                    job= "1st Grade Teacher",
-                                    photo_path= "./static/uploads/default.jpg"
-        )
+        fake_assistant1 = Assistant(name="Ana",
+                                    surname="Markez",
+                                    job="1st Grade Teacher",
+                                    photo_path="./static/uploads/default.jpg"
+                                    )
         db.session.add(fake_assistant1)
         db.session.commit()
         self.assertEqual(app.debug, False)
- 
+
     # executed after each test
     def tearDown(self):
         db.drop_all()
-        
- 
- 
+
+
 ###############
 #### tests ####
 ###############
- 
+
     def test_main_page(self):
-        response = self.app.get('/', follow_redirects=True)
+        response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
 
     def test_create_assistant(self):
-        assistantts_all = len(Assistant.query.all())
+        assistants_before = len(Assistant.query.all())
+        new_assistant = Assistant(name="Bartosz",
+                                  surname="Trud",
+                                  job="2nd Grade Teacher",
+                                  photo_path="./static/uploads/default.jpg"
+                                  )
+        db.session.add(new_assistant)
+        db.session.commit()
 
-        self.assertEqual(assistantts_all, 1)
- 
- 
+        assistants_after = len(Assistant.query.all())
+
+        self.assertEqual(assistants_after, assistants_before + 1)
+
+
 if __name__ == "__main__":
     unittest.main()

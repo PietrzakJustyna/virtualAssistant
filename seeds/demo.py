@@ -5,6 +5,7 @@ from virtualassistant.models import Assistant
 from urllib.request import urlopen
 import json
 
+
 def get_jsonparsed_data(url):
     lines = []
     response = urlopen(url)
@@ -16,6 +17,7 @@ def get_jsonparsed_data(url):
             lines.append(elem.get("title"))
 
     return lines
+
 
 class Job(Generator):
     """ Job generator from json list"""
@@ -31,7 +33,8 @@ class Job(Generator):
             A random job title in string format
         """
         if self._lines is None:
-            self._lines = get_jsonparsed_data("http://api.dataatwork.org/v1/jobs")
+            self._lines = get_jsonparsed_data(
+                "http://api.dataatwork.org/v1/jobs")
 
         result = self.rnd.choice(self._lines)
 
@@ -41,20 +44,20 @@ class Job(Generator):
 # All seeders inherit from Seeder
 class DemoSeeder(Seeder):
 
-  # run() will be called by Flask-Seeder
-  def run(self):
-    faker = Faker(
-      cls=Assistant,
-      init={
-        "id": generator.Sequence(),
-        "name": generator.Name(),
-        "surname": generator.Name(),
-        "job": Job(),
-        "photo_path": "./static/uploads/default.jpg"
-      }
-    )
+    # run() will be called by Flask-Seeder
+    def run(self):
+        faker = Faker(
+            cls=Assistant,
+            init={
+                "id": generator.Sequence(),
+                "name": generator.Name(),
+                "surname": generator.Name(),
+                "job": Job(),
+                "photo_path": "./static/uploads/default.jpg"
+            }
+        )
 
-    # Create 5 users
-    for elem in faker.create(5):
-      print("Adding assistant: %s" % elem)
-      self.db.session.add(elem)
+        # Create 5 users
+        for elem in faker.create(5):
+            print("Adding assistant: %s" % elem)
+            self.db.session.add(elem)
