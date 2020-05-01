@@ -4,6 +4,7 @@ from virtualassistant import app, db
 import os
 import sys
 import unittest
+from werkzeug.datastructures import FileStorage
 
 TEST_DB = 'test.db'
 
@@ -29,7 +30,13 @@ class BasicTests(unittest.TestCase):
                                     job="1st Grade Teacher",
                                     photo_path="./static/uploads/default.jpg"
                                     )
+        fake_assistant2 = Assistant(name="Jan",
+                                    surname="Kowalski",
+                                    job="Trader",
+                                    photo_path="./static/uploads/default.jpg"
+                                    )
         db.session.add(fake_assistant1)
+        db.session.add(fake_assistant2)
         db.session.commit()
         self.assertEqual(app.debug, False)
 
@@ -47,19 +54,39 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_create_assistant(self):
-        assistants_before = len(Assistant.query.all())
-        new_assistant = Assistant(name="Bartosz",
-                                  surname="Trud",
-                                  job="2nd Grade Teacher",
-                                  photo_path="./static/uploads/default.jpg"
-                                  )
-        db.session.add(new_assistant)
-        db.session.commit()
 
-        assistants_after = len(Assistant.query.all())
+        with app.test_client() as client:
+     
+            assistants_before = len(Assistant.query.all())
+            data = {"name":"Bartosz",
+                            "surname":"Trud",
+                            "job":"2nd Grade Teacher",
+            }
 
-        self.assertEqual(assistants_after, assistants_before + 1)
+            photo = os.path.join("test_assets/image.jpeg")
 
+            with open(photo, "rb") as photo:
+
+                data['photo'] = photo
+                client.post("/assistants", data=data, content_type='multipart/form-data')
+
+            assistants_after = len(Assistant.query.all())
+            new_assistant = Assistant.query.filter_by(name=data["name"], surname=data["surname"]).first()
+            os.remove((new_assistant.photo_path).replace(".", "virtualassistant", 1))
+            self.assertEqual(assistants_after, assistants_before + 1)
+
+
+    def test_delete_assistant(self):
+
+        with app.test_client() as client:
+     
+            assistants_before = len(Assistant.query.all())
+            assistant_to_delete = Assistant.query.first()
+
+            client.delete("/assistants/{}".format(assistant_to_delete.id))
+
+            assistants_after = len(Assistant.query.all())
+            self.assertEqual(assistants_after, assistants_before - 1)
 
 if __name__ == "__main__":
     unittest.main()
