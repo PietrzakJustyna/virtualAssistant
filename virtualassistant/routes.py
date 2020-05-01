@@ -18,10 +18,13 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@app.route("/", methods=["GET"])
+def home():
+    return render_template("home.html")
 
 @app.route("/assistants/create", methods=["GET"])
 def assistants_create():
-    return render_template("index.html")
+    return render_template("create_form.html")
 
 @app.route("/assistants", methods=["GET", "POST"])
 def assistants():
@@ -40,7 +43,7 @@ def assistants():
             return redirect(url_for("assistants_create"))
         if file and allowed_file(file.filename):
             photo_name, ext = os.path.splitext(file.filename)
-            new_photo_name = "{}.{}".format(id_generator(), ext)
+            new_photo_name = "{}{}".format(id_generator(), ext)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name))
             photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
             im = Image.open(photo_path)
@@ -51,7 +54,7 @@ def assistants():
         assistant = Assistant(name=request.form.get("name"), 
                                 surname=request.form.get("surname"), 
                                 job=request.form.get("job"),
-                                photo_path = photo_path)
+                                photo_path = "./static/uploads/" + new_photo_name)
 
         db.session.add(assistant)
         db.session.commit()
@@ -79,6 +82,6 @@ def assistants_changes(id):
         assistantts_all = Assistant.query.all()
         return render_template("assistants.html", assistants=assistantts_all, message="Update saved!")
 
-@app.route("/assistants/update", methods=["GET"])
-def assistants_update():
-    return render_template("index.html")
+# @app.route("/assistants/update", methods=["GET"])
+# def assistants_update():
+#     return render_template("index.html")
