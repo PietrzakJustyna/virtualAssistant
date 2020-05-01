@@ -38,7 +38,9 @@
       $.getJSON(url, function (data) {
           $.each(data, function (index, value) {
               // APPEND OR INSERT DATA TO SELECT ELEMENT.
+              if (value.title){
               $('#sel').append('<option value="' + value.title + '">' + value.title + '</option>');
+              }
           });
         });
 
