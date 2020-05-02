@@ -36,10 +36,10 @@ Unittests are prepared in test_virtualassistant.py. To use them to test the app 
 Following app is a simple CRUD virtual assistant management site.
 We have following functionalities:
 
-● GET /assistants – displaying all assistants 
-● GET /assistants/create – displaying create form
-● POST /assistants – storing new profiles
-● GET /assistants/update – displaying update form
-● PUT /assistants/{id} – updates assistant profile
-● DELETE /assistants/{id} – deletes profile
+* GET /assistants – displaying all assistants 
+GET /assistants/create – displaying create form
+* POST /assistants – storing new profiles
+* GET /assistants/update – displaying update form
+* PUT /assistants/{id} – updates assistant profile
+* DELETE /assistants/{id} – deletes profile
 
