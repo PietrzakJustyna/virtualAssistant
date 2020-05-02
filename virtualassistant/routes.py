@@ -79,16 +79,38 @@ def assistants_changes(id):
         db.session.delete(assistant_to_delete)
         db.session.commit()
         return render_template("assistants.html")
-    if request.method(id) == "PUT":
+    if request.method == "PUT":
+        assistant_to_update = Assistant.query.get(id)
         if request.form:
-            assistant_to_update = Assistant.query.get(id)
             assistant_to_update.name = request.form.get("name")
             assistant_to_update.surname = request.form.get("surname")
-            db.session.commit()
+            if request.form.get("job"):
+                assistant_to_update.job = request.form.get("job")
 
+        if request.files.get("photo"):
+            file = request.files.get("photo")
+            if file.filename != '':
+                if not allowed_file(file.filename):
+                    flash('Wrong file format. Accepted formats: png, jpg, jpeg.')
+                    return redirect(url_for("assistants/{}".format(id)))
+                if file and allowed_file(file.filename):
+                    photo_name, ext = os.path.splitext(file.filename)
+                    new_photo_name = "{}{}".format(id_generator(), ext)
+                    file.save(os.path.join(
+                        app.config['UPLOAD_FOLDER'], new_photo_name))
+                    photo_path = os.path.join(
+                        app.config['UPLOAD_FOLDER'], new_photo_name)
+                    im = Image.open(photo_path)
+                    size = (128, 128)
+                    im.thumbnail(size)
+                    im.save(photo_path)
+                    assistant_to_update.photo_path = photo_path
+        db.session.commit()
         assistantts_all = Assistant.query.all()
         return render_template("assistants.html", assistants=assistantts_all, message="Update saved!")
 
-# @app.route("/assistants/update", methods=["GET"])
-# def assistants_update():
-#     return render_template("index.html")
+@app.route("/assistants/update", methods=["GET"])
+def assistants_update():
+    profile_id = request.args.get('id')
+    profile_to_update = Assistant.query.get(profile_id)
+    return render_template("update_form.html", assistant = profile_to_update)

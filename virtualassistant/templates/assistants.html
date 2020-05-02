@@ -24,7 +24,7 @@
       <td>
         <button class="delete ghost-button" data-target="/" data-method="DELETE" data-disabled="true"
           data-id="{{assistant.id}}">Delete profile</button>
-        <button class="update ghost-button" data-target="/" data-method="DELETE" data-disabled="true"
+        <button class="update ghost-button" data-target="/" data-method="GET" data-disabled="true"
           data-id="{{assistant.id}}">Update profile</button>
       </td>
       {% endif %}
@@ -50,8 +50,18 @@
                 window.location.reload(true);
               });
           }
-        })
-      })
+        });
+      });
+
+      var buttons_list_update = Array.from(document.getElementsByClassName("update"));
+      buttons_list_update.forEach(element => {
+        element.addEventListener("click", function(){
+          var assistant_id = element.getAttribute("data-id");
+          window.location.replace("/assistants/update?id=" + assistant_id);
+        });
+
+      });
+      
     });
   </script>
 
