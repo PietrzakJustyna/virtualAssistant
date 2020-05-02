@@ -14,23 +14,21 @@
   <div class="container">
     <fieldset>
       <h1>Update profile</h1>
-      <p>Current profile picture:
-        <img src="{{ assistant.photo_path }}">
-      </p>
-
-      <p>Curret job position:
-        {{ assistant.job }}
-      </p>
-
       <form method="POST" action="" enctype="multipart/form-data" id="update_form" >
         <input type="text" name="name" required="True" placeholder="Name" class="ghost-input" value="{{ assistant.name }}">
         <input type="text" name="surname" required="True" placeholder="Surname" class="ghost-input" value="{{ assistant.surname }}">
+        <p>
+          <img src="{{ assistant.photo_path }}" style="display:block">
+          Current profile picture. To updade upload new photo below. 
+        </p>
         <input name="photo" type="file" class="inputfile" id="file" accept="image/*">
         <label class="upload-label" for="file">Choose new profile photo (click to upload)<i class="fas fa-file-upload"></i></label>
-
+        <p>Curret job position. To update choose new positio from the list below. 
+          {{ assistant.job }}
+        </p>
         <div class="selectdiv">
           <select id="sel" name="job">
-            <option value="">-- Select job --</option>
+            <option value="">-- Select new job --</option>
           </select>
         </div>
 
