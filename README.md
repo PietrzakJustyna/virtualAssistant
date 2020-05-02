@@ -28,6 +28,14 @@ Run `Python3` to open Python3 CLI. Inside run:
 * Start the application in development environment (debug = True).
     `python3 run.py`
 
+* To start in production mode (debug = False) you need to run:
+    * `export FLASK_APP=run.py`
+    * `export FLASK_ENVIRONMENT=production`
+    * `flask run`
+
+## Configuration
+You can find some configuration variables in config.py file. 
+
 ## Testing
 Unittests are prepared in test_virtualassistant.py. To use them to test the app run:
     `python3 test_virtualassistant.py`

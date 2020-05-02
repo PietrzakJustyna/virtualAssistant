@@ -8,7 +8,6 @@ UPLOAD_FOLDER = 'virtualassistant/static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 SQLALCHEMY_DATABASE_URI = database_file
-UPLOAD_FOLDER = UPLOAD_FOLDER
 secret_key = "secret"
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
