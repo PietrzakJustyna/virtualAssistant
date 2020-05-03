@@ -2,13 +2,30 @@ from flask_seeder import Seeder, Faker, generator
 from flask_seeder.generator import Generator
 import sys
 from virtualassistant.models import Assistant
-from urllib.request import urlopen
+import urllib.request
 import json
+from virtualassistant.routes import id_generator
+import os
+from PIL import Image
 
+def photo_path_generator():
+    new_photo_name = "{}.jpg".format(id_generator())
+    photo_path = os.path.join('virtualassistant/static/uploads', new_photo_name)
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    urllib.request.install_opener(opener)
+    urllib.request.urlretrieve("https://thispersondoesnotexist.com/image.jpg", photo_path)
+
+    im = Image.open(photo_path)
+    size = (128, 128)
+    im.thumbnail(size)
+    im.save(photo_path)
+
+    return photo_path
 
 def get_jsonparsed_data(url):
     lines = []
-    response = urlopen(url)
+    response = urllib.request.urlopen(url)
     data = response.read().decode("utf-8")
     json_dict = json.loads(data)
 
@@ -40,6 +57,24 @@ class Job(Generator):
 
         return result
 
+class Photo(Generator):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._lines = None
+
+    def generate(self):
+        """ Generate a random photo from thispersondoesntexist.com
+
+        Returns:
+            A saved photo path in string format
+        """
+
+        if self._lines is None:
+            self._lines = photo_path_generator()
+
+        result = self._lines
+
+        return result
 
 # All seeders inherit from Seeder
 class DemoSeeder(Seeder):
@@ -53,11 +88,11 @@ class DemoSeeder(Seeder):
                 "name": generator.Name(),
                 "surname": generator.Name(),
                 "job": Job(),
-                "photo_path": "./static/uploads/default.jpg"
+                "photo_path": Photo()
             }
         )
 
-        # Create 5 users
-        for elem in faker.create(5):
+        # Create 10 users
+        for elem in faker.create(10):
             print("Adding assistant: %s" % elem)
             self.db.session.add(elem)
