@@ -28,12 +28,12 @@ class BasicTests(unittest.TestCase):
         fake_assistant1 = Assistant(name="Ana",
                                     surname="Markez",
                                     job="1st Grade Teacher",
-                                    photo_path="./static/uploads/default.jpg"
+                                    photo_name="test.jpg"
                                     )
         fake_assistant2 = Assistant(name="Jan",
                                     surname="Kowalski",
                                     job="Trader",
-                                    photo_path="./static/uploads/default.jpg"
+                                    photo_name="test.jpg"
                                     )
         db.session.add(fake_assistant1)
         db.session.add(fake_assistant2)
@@ -72,7 +72,7 @@ class BasicTests(unittest.TestCase):
 
             assistants_after = len(Assistant.query.all())
             new_assistant = Assistant.query.filter_by(name=data["name"], surname=data["surname"]).first()
-            new_file_path = new_assistant.photo_path.replace(".", "virtualassistant", 1)
+            new_file_path = "virtualassistant/static/uploads/" + new_assistant.photo_name
             if os.path.exists(new_file_path):
                 os.remove(new_file_path)
             self.assertEqual(assistants_after, assistants_before + 1)
@@ -89,6 +89,39 @@ class BasicTests(unittest.TestCase):
 
             assistants_after = len(Assistant.query.all())
             self.assertEqual(assistants_after, assistants_before - 1)
+
+
+    def test_create_assistant_no_photo(self):
+
+        with app.test_client() as client:
+     
+            assistants_before = len(Assistant.query.all())
+            data = {"name":"Bartosz",
+                    "surname":"Trud",
+                    "job":"2nd Grade Teacher",
+                            
+            }
+            client.post("/assistants", data=data)
+            assistants_after = len(Assistant.query.all())
+            new_assistant = Assistant.query.filter_by(name=data["name"], surname=data["surname"]).first()
+            new_file_path = "virtualassistant/static/uploads/" + new_assistant.photo_name
+            if os.path.exists(new_file_path):
+                os.remove(new_file_path)
+            self.assertEqual(assistants_after, assistants_before + 1)
+
+    def test_update_assistant(self):
+
+        with app.test_client() as client:
+     
+            assistant_to_update = Assistant.query.first()
+
+            data = {"name":"Alojzy",
+                    "surname":"Kempa",       
+            }
+            client.put("/assistants/{}".format(assistant_to_update.id), data=data)
+
+            self.assertEqual(assistant_to_update.name, "Alojzy")
+
 
 if __name__ == "__main__":
     unittest.main()

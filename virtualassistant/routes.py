@@ -57,44 +57,44 @@ def assistants():
                 size = (128, 128)
                 im.thumbnail(size)
                 im.save(photo_path)
+            
+            else:
+                file = request.files.get("photo")
 
-            file = request.files.get("photo")
-            if file.filename == '':
-                if new_photo_name == None:
-                    new_photo_name = "{}.jpg".format(id_generator())
-                if photo_path == None:
-                    photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
+                if file.filename == '':
+                    if new_photo_name == None:
+                        new_photo_name = "{}.jpg".format(id_generator())
+                    if photo_path == None:
+                        photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
 
-                opener = urllib.request.build_opener()
-                opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-                urllib.request.install_opener(opener)
-                urllib.request.urlretrieve("https://thispersondoesnotexist.com/image.jpg", photo_path)
+                    opener = urllib.request.build_opener()
+                    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+                    urllib.request.install_opener(opener)
+                    urllib.request.urlretrieve("https://thispersondoesnotexist.com/image.jpg", photo_path)
 
-                im = Image.open(photo_path)
-                size = (128, 128)
-                im.thumbnail(size)
-                im.save(photo_path)
+                    im = Image.open(photo_path)
+                    size = (128, 128)
+                    im.thumbnail(size)
+                    im.save(photo_path)
 
-            if file.filename != '' and not allowed_file(file.filename):
-                flash('Wrong file format. Accepted formats: png, jpg, jpeg.')
-                return redirect(url_for("assistants_create"))
+                if file.filename != '' and not allowed_file(file.filename):
+                    flash('Wrong file format. Accepted formats: png, jpg, jpeg.')
+                    return redirect(url_for("assistants_create"))
 
-            if file and allowed_file(file.filename):
-                photo_name, ext = os.path.splitext(file.filename)
-                print("before:",new_photo_name)
-                if new_photo_name == None:
-                    new_photo_name = "{}{}".format(id_generator(), ext)
-                    print("after:",new_photo_name)
+                if file and allowed_file(file.filename):
+                    photo_name, ext = os.path.splitext(file.filename)
+                    if new_photo_name == None:
+                        new_photo_name = "{}{}".format(id_generator(), ext)
 
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name))
-                
-                if photo_path == None:
-                    photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name))
+                    
+                    if photo_path == None:
+                        photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
 
-                im = Image.open(photo_path)
-                size = (128, 128)
-                im.thumbnail(size)
-                im.save(photo_path)
+                    im = Image.open(photo_path)
+                    size = (128, 128)
+                    im.thumbnail(size)
+                    im.save(photo_path)
 
         assistant = Assistant(name=request.form.get("name"),
                             surname=request.form.get("surname"),
@@ -112,8 +112,7 @@ def assistants():
 def assistants_changes(id):
     if request.method == "DELETE":
         assistant_to_delete = Assistant.query.get(id)
-        if "default" not in assistant_to_delete.photo_path:
-            os.remove(assistant_to_delete.photo_path)
+        # os.remove("virtualassistant/static/uploads/" + assistant_to_delete.photo_name)
 
         db.session.delete(assistant_to_delete)
         db.session.commit()
