@@ -16,13 +16,10 @@ Assuming you already have Python, pip and venv prepared.
 * Install dependencies. Inside project directory run:
     `pip3 install -r requirements.txt`
 
-* Prepare database
-Run `Python3` to open Python3 CLI. Inside run:
-    `from virtualassistant import db`
-    `db.create_all`
-    `exit()`
+* Prepare database with preared migrations.
+    `flask db upgrade`
 
-* Populate the database using the oreoared seeder. 
+* Populate the database using the prepared seeder. 
     `flask seed run`
 
 * Start the application in development environment (debug = True).

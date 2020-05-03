@@ -33,7 +33,7 @@ def assistants_create():
 @app.route("/assistants", methods=["GET", "POST"])
 def assistants():
     if request.method == "GET":
-        assistantts_all = Assistant.query.all()
+        assistantts_all = Assistant.query.order_by(Assistant.created_on.desc()).all()
         return render_template("assistants.html", assistants=assistantts_all, message=None)
 
 
@@ -104,7 +104,7 @@ def assistants():
         db.session.add(assistant)
         db.session.commit()
 
-        assistantts_all = Assistant.query.all()
+        assistantts_all = Assistant.query.order_by(Assistant.created_on.desc()).all()
         return render_template("assistants.html", assistants=assistantts_all, message="New assistant added!")
 
 
@@ -146,8 +146,8 @@ def assistants_changes(id):
 
                     assistant_to_update.photo_name = new_photo_name
         db.session.commit()
-        assistantts_all = Assistant.query.all()
-        return render_template("assistants.html", assistants=assistantts_all, message="Update saved!")
+        assistantts_all = Assistant.query.order_by(Assistant.created_on.desc()).all()
+        return "OK"
 
 @app.route("/assistants/update", methods=["GET"])
 def assistants_update():
