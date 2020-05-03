@@ -6,7 +6,7 @@ import string
 import random
 from virtualassistant import config
 from PIL import Image
-
+import urllib.request
 
 ALLOWED_EXTENSIONS = config.ALLOWED_EXTENSIONS
 
@@ -35,32 +35,69 @@ def assistants():
     if request.method == "GET":
         assistantts_all = Assistant.query.all()
         return render_template("assistants.html", assistants=assistantts_all, message=None)
+
+
     elif request.method == "POST":
         if request.form:
+            new_photo_name = None
+            photo_path = None
+
             if 'file' not in request.files:
-                photo_path = "./static/uploads/default.jpg"
-        file = request.files.get("photo")
-        if file.filename == '':
-            photo_path = "./static/uploads/default.jpg"
-        if not allowed_file(file.filename):
-            flash('Wrong file format. Accepted formats: png, jpg, jpeg.')
-            return redirect(url_for("assistants_create"))
-        if file and allowed_file(file.filename):
-            photo_name, ext = os.path.splitext(file.filename)
-            new_photo_name = "{}{}".format(id_generator(), ext)
-            file.save(os.path.join(
-                app.config['UPLOAD_FOLDER'], new_photo_name))
-            photo_path = os.path.join(
-                app.config['UPLOAD_FOLDER'], new_photo_name)
-            im = Image.open(photo_path)
-            size = (128, 128)
-            im.thumbnail(size)
-            im.save(photo_path)
+                if new_photo_name == None:
+                    new_photo_name = "{}.jpg".format(id_generator())
+                if photo_path == None:
+                    photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
+
+                opener = urllib.request.build_opener()
+                opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+                urllib.request.install_opener(opener)
+                urllib.request.urlretrieve("https://thispersondoesnotexist.com/image.jpg", photo_path)
+
+                im = Image.open(photo_path)
+                size = (128, 128)
+                im.thumbnail(size)
+                im.save(photo_path)
+
+            file = request.files.get("photo")
+            if file.filename == '':
+                if new_photo_name == None:
+                    new_photo_name = "{}.jpg".format(id_generator())
+                if photo_path == None:
+                    photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
+
+                opener = urllib.request.build_opener()
+                opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+                urllib.request.install_opener(opener)
+                urllib.request.urlretrieve("https://thispersondoesnotexist.com/image.jpg", photo_path)
+
+                im = Image.open(photo_path)
+                size = (128, 128)
+                im.thumbnail(size)
+                im.save(photo_path)
+
+            if file.filename != '' and not allowed_file(file.filename):
+                flash('Wrong file format. Accepted formats: png, jpg, jpeg.')
+                return redirect(url_for("assistants_create"))
+
+            if file and allowed_file(file.filename):
+                photo_name, ext = os.path.splitext(file.filename)
+                if new_photo_name == None:
+                    new_photo_name = "{}{}".format(id_generator(), ext)
+
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name))
+                
+                if photo_path == None:
+                    photo_path = os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name)
+
+                im = Image.open(photo_path)
+                size = (128, 128)
+                im.thumbnail(size)
+                im.save(photo_path)
 
         assistant = Assistant(name=request.form.get("name"),
-                              surname=request.form.get("surname"),
-                              job=request.form.get("job"),
-                              photo_path="./static/uploads/" + new_photo_name)
+                            surname=request.form.get("surname"),
+                            job=request.form.get("job"),
+                            photo_path="./static/uploads/" + new_photo_name)
 
         db.session.add(assistant)
         db.session.commit()
