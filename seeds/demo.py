@@ -21,7 +21,7 @@ def photo_path_generator():
     im.thumbnail(size)
     im.save(photo_path)
 
-    return photo_path
+    return new_photo_name
 
 def get_jsonparsed_data(url):
     lines = []
@@ -88,7 +88,7 @@ class DemoSeeder(Seeder):
                 "name": generator.Name(),
                 "surname": generator.Name(),
                 "job": Job(),
-                "photo_path": Photo()
+                "photo_name": Photo()
             }
         )
 

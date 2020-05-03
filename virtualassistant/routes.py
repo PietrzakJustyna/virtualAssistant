@@ -42,7 +42,7 @@ def assistants():
             new_photo_name = None
             photo_path = None
 
-            if 'file' not in request.files:
+            if 'photo' not in request.files:
                 if new_photo_name == None:
                     new_photo_name = "{}.jpg".format(id_generator())
                 if photo_path == None:
@@ -81,8 +81,10 @@ def assistants():
 
             if file and allowed_file(file.filename):
                 photo_name, ext = os.path.splitext(file.filename)
+                print("before:",new_photo_name)
                 if new_photo_name == None:
                     new_photo_name = "{}{}".format(id_generator(), ext)
+                    print("after:",new_photo_name)
 
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], new_photo_name))
                 
@@ -97,7 +99,7 @@ def assistants():
         assistant = Assistant(name=request.form.get("name"),
                             surname=request.form.get("surname"),
                             job=request.form.get("job"),
-                            photo_path="./static/uploads/" + new_photo_name)
+                            photo_name=new_photo_name)
 
         db.session.add(assistant)
         db.session.commit()
@@ -137,11 +139,13 @@ def assistants_changes(id):
                         app.config['UPLOAD_FOLDER'], new_photo_name))
                     photo_path = os.path.join(
                         app.config['UPLOAD_FOLDER'], new_photo_name)
+
                     im = Image.open(photo_path)
                     size = (128, 128)
                     im.thumbnail(size)
                     im.save(photo_path)
-                    assistant_to_update.photo_path = photo_path
+
+                    assistant_to_update.photo_name = new_photo_name
         db.session.commit()
         assistantts_all = Assistant.query.all()
         return render_template("assistants.html", assistants=assistantts_all, message="Update saved!")

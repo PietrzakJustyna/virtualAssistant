@@ -12,7 +12,7 @@
     {% for assistant in assistants %}
     <tr>
       <td>
-        <img src="{{ assistant.photo_path }}" style="float: left;">
+        <img src="{{ url_for('static', filename='/uploads/' + assistant.photo_name) }}" style="float: left;">
       </td>
       <td>
         Name: {{assistant.name}} <br />
