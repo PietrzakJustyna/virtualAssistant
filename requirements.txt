@@ -3,3 +3,5 @@ flask-sqlalchemy
 flask-migrate
 pillow
 flask-seeder
+flask-wtf
+WTForms

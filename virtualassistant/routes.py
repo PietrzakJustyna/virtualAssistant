@@ -8,6 +8,27 @@ from virtualassistant import config
 from PIL import Image
 import urllib.request
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, FileField
+from wtforms.validators import DataRequired, Regexp
+from wtforms_validators import Alpha
+
+import re
+
+reg = re.compile(r"(?![\d_])\w+")
+
+class CreateForm(FlaskForm):
+    name = StringField('name', validators=[DataRequired(), Regexp(reg)])
+    surname = StringField('surname', validators=[DataRequired(), Regexp(reg)])
+    job = StringField('job', validators=[DataRequired()])
+    photo = FileField()
+
+class UpdateForm(FlaskForm):
+    name = StringField('name', validators=[Regexp(reg)])
+    surname = StringField('surname', validators=[Regexp(reg)])
+    job = StringField('job')
+
+
 ALLOWED_EXTENSIONS = config.ALLOWED_EXTENSIONS
 
 
@@ -27,17 +48,18 @@ def home():
 
 @app.route("/assistants/create", methods=["GET"])
 def assistants_create():
-    return render_template("create_form.html")
+    myform = CreateForm(request.form)
+    return render_template("create_form.html", form = myform)
 
 
 @app.route("/assistants", methods=["GET", "POST"])
 def assistants():
+    myform = CreateForm(request.form)
     if request.method == "GET":
         assistantts_all = Assistant.query.order_by(
             Assistant.created_on.desc()).all()
         return render_template("assistants.html", assistants=assistantts_all, message=None)
-
-    elif request.method == "POST":
+    elif request.method == "POST" and myform.validate_on_submit():
         if request.form:
             new_photo_name = None
             photo_path = None
@@ -110,12 +132,16 @@ def assistants():
         db.session.add(assistant)
         db.session.commit()
 
-        assistantts_all = Assistant.query.order_by(Assistant._on.desc()).all()
+        assistantts_all = Assistant.query.order_by(Assistant.created_on.desc()).all()
         return render_template("assistants.html", assistants=assistantts_all, message="New assistant added!")
+    else:
+        flash("Insert correct data!")
+        return redirect(url_for("assistants_create"))
 
 
 @app.route("/assistants/<int:id>", methods=["PUT", "DELETE"])
 def assistants_changes(id):
+    myform = UpdateForm(request.form)
     if request.method == "DELETE":
         assistant_to_delete = Assistant.query.get(id)
         # os.remove("virtualassistant/static/uploads/" + assistant_to_delete.photo_name)
@@ -123,9 +149,12 @@ def assistants_changes(id):
         db.session.delete(assistant_to_delete)
         db.session.commit()
         return render_template("assistants.html")
-    if request.method == "PUT":
+
+    if request.method == "PUT" and myform.validate_on_submit:
+
         assistant_to_update = Assistant.query.get(id)
         if request.form:
+
             assistant_to_update.name = request.form.get("name")
             assistant_to_update.surname = request.form.get("surname")
             if request.form.get("job"):
@@ -136,7 +165,7 @@ def assistants_changes(id):
             if file.filename != "":
                 if not allowed_file(file.filename):
                     flash("Wrong file format. Accepted formats: png, jpg, jpeg.")
-                    return redirect(url_for("assistants/{}".format(id)))
+                    return "ERROR"
                 if file and allowed_file(file.filename):
                     photo_name, ext = os.path.splitext(file.filename)
                     new_photo_name = "{}{}".format(id_generator(), ext)
@@ -153,10 +182,15 @@ def assistants_changes(id):
                     assistant_to_update.photo_name = new_photo_name
         db.session.commit()
         return "OK"
-
+    else:
+        flash("Insert correct data!")
+        return "ERROR"
 
 @app.route("/assistants/update", methods=["GET"])
 def assistants_update():
+    myform = UpdateForm(request.form)
     profile_id = request.args.get("id")
     profile_to_update = Assistant.query.get(profile_id)
-    return render_template("update_form.html", assistant=profile_to_update)
+    return render_template("update_form.html", assistant=profile_to_update, form=myform)
+
+
