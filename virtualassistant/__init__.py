@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 
 app.config["SQLALCHEMY_DATABASE_URI"] = config.SQLALCHEMY_DATABASE_URI
-app.config['UPLOAD_FOLDER'] = config.UPLOAD_FOLDER
+app.config["UPLOAD_FOLDER"] = config.UPLOAD_FOLDER
 app.secret_key = config.secret_key
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = config.SQLALCHEMY_TRACK_MODIFICATIONS
 

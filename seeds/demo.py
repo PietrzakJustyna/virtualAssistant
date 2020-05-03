@@ -8,13 +8,16 @@ from virtualassistant.routes import id_generator
 import os
 from PIL import Image
 
+
 def photo_path_generator():
     new_photo_name = "{}.jpg".format(id_generator())
-    photo_path = os.path.join('virtualassistant/static/uploads', new_photo_name)
+    photo_path = os.path.join(
+        "virtualassistant/static/uploads", new_photo_name)
     opener = urllib.request.build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    opener.addheaders = [("User-agent", "Mozilla/5.0")]
     urllib.request.install_opener(opener)
-    urllib.request.urlretrieve("https://thispersondoesnotexist.com/image.jpg", photo_path)
+    urllib.request.urlretrieve(
+        "https://thispersondoesnotexist.com/image.jpg", photo_path)
 
     im = Image.open(photo_path)
     size = (128, 128)
@@ -22,6 +25,7 @@ def photo_path_generator():
     im.save(photo_path)
 
     return new_photo_name
+
 
 def get_jsonparsed_data(url):
     lines = []
@@ -57,6 +61,7 @@ class Job(Generator):
 
         return result
 
+
 class Photo(Generator):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -77,6 +82,8 @@ class Photo(Generator):
         return result
 
 # All seeders inherit from Seeder
+
+
 class DemoSeeder(Seeder):
 
     # run() will be called by Flask-Seeder

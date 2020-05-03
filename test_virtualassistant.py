@@ -6,7 +6,7 @@ import sys
 import unittest
 from werkzeug.datastructures import FileStorage
 
-TEST_DB = 'test.db'
+TEST_DB = "test.db"
 
 
 class BasicTests(unittest.TestCase):
@@ -17,9 +17,9 @@ class BasicTests(unittest.TestCase):
 
     # executed prior to each test
     def setUp(self):
-        app.config['TESTING'] = True
-        app.config['DEBUG'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+        app.config["TESTING"] = True
+        app.config["DEBUG"] = False
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + \
             os.path.join(project_dir, TEST_DB)
         self.app = app.test_client()
         db.drop_all()
@@ -50,38 +50,39 @@ class BasicTests(unittest.TestCase):
 ###############
 
     def test_main_page(self):
-        response = self.app.get('/')
+        response = self.app.get("/")
         self.assertEqual(response.status_code, 200)
 
     def test_create_assistant(self):
 
         with app.test_client() as client:
-     
+
             assistants_before = len(Assistant.query.all())
-            data = {"name":"Bartosz",
-                            "surname":"Trud",
-                            "job":"2nd Grade Teacher",
-            }
+            data = {"name": "Bartosz",
+                            "surname": "Trud",
+                            "job": "2nd Grade Teacher",
+                    }
 
             photo = os.path.join("test_assets/image.jpeg")
 
             with open(photo, "rb") as photo:
 
-                data['photo'] = photo
-                client.post("/assistants", data=data, content_type='multipart/form-data')
+                data["photo"] = photo
+                client.post("/assistants", data=data,
+                            content_type="multipart/form-data")
 
             assistants_after = len(Assistant.query.all())
-            new_assistant = Assistant.query.filter_by(name=data["name"], surname=data["surname"]).first()
+            new_assistant = Assistant.query.filter_by(
+                name=data["name"], surname=data["surname"]).first()
             new_file_path = "virtualassistant/static/uploads/" + new_assistant.photo_name
             if os.path.exists(new_file_path):
                 os.remove(new_file_path)
             self.assertEqual(assistants_after, assistants_before + 1)
 
-
     def test_delete_assistant(self):
 
         with app.test_client() as client:
-     
+
             assistants_before = len(Assistant.query.all())
             assistant_to_delete = Assistant.query.first()
 
@@ -90,20 +91,20 @@ class BasicTests(unittest.TestCase):
             assistants_after = len(Assistant.query.all())
             self.assertEqual(assistants_after, assistants_before - 1)
 
-
     def test_create_assistant_no_photo(self):
 
         with app.test_client() as client:
-     
+
             assistants_before = len(Assistant.query.all())
-            data = {"name":"Bartosz",
-                    "surname":"Trud",
-                    "job":"2nd Grade Teacher",
-                            
-            }
+            data = {"name": "Bartosz",
+                    "surname": "Trud",
+                    "job": "2nd Grade Teacher",
+
+                    }
             client.post("/assistants", data=data)
             assistants_after = len(Assistant.query.all())
-            new_assistant = Assistant.query.filter_by(name=data["name"], surname=data["surname"]).first()
+            new_assistant = Assistant.query.filter_by(
+                name=data["name"], surname=data["surname"]).first()
             new_file_path = "virtualassistant/static/uploads/" + new_assistant.photo_name
             if os.path.exists(new_file_path):
                 os.remove(new_file_path)
@@ -112,13 +113,14 @@ class BasicTests(unittest.TestCase):
     def test_update_assistant(self):
 
         with app.test_client() as client:
-     
+
             assistant_to_update = Assistant.query.first()
 
-            data = {"name":"Alojzy",
-                    "surname":"Kempa",       
-            }
-            client.put("/assistants/{}".format(assistant_to_update.id), data=data)
+            data = {"name": "Alojzy",
+                    "surname": "Kempa",
+                    }
+            client.put(
+                "/assistants/{}".format(assistant_to_update.id), data=data)
 
             self.assertEqual(assistant_to_update.name, "Alojzy")
 
