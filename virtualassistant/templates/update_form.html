@@ -77,20 +77,21 @@
             })
             .done(function (data) {
                 if (data == "ERROR"){
-                  console.log(data)
-                  // window.location.reload(true);
+                  window.location.reload(true);
                 } else if (data == "OK") {
                   window.location.replace("/assistants");
                 }
               });
     });
+    var csrf_token = "{{ csrf_token() }}";
+
     $.ajaxSetup({
             beforeSend: function(xhr, settings) {
                 if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", "{{ form.csrf_token._value() }}")
+                    xhr.setRequestHeader("X-CSRFToken", csrf_token);
                 }
             }
-        })
+        });
     });
   </script>
 </body>

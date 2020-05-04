@@ -9,25 +9,24 @@ from PIL import Image
 import urllib.request
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, FileField
+from wtforms import StringField, FileField, ValidationError
 from wtforms.validators import DataRequired, Regexp
-from wtforms_validators import Alpha
 
-import re
-
-reg = re.compile(r"(?![\d_])\w+")
+def alpha_val(form, field):
+    if not field.data.isalpha():
+        raise ValidationError("Please use only letters")
 
 class CreateForm(FlaskForm):
-    name = StringField('name', validators=[DataRequired(), Regexp(reg)])
-    surname = StringField('surname', validators=[DataRequired(), Regexp(reg)])
+    name = StringField('name', validators=[DataRequired(), alpha_val])
+    surname = StringField('surname', validators=[DataRequired(), alpha_val])
     job = StringField('job', validators=[DataRequired()])
     photo = FileField()
 
 class UpdateForm(FlaskForm):
-    name = StringField('name', validators=[Regexp(reg)])
-    surname = StringField('surname', validators=[Regexp(reg)])
+    name = StringField('name', validators=[alpha_val])
+    surname = StringField('surname', validators=[alpha_val])
     job = StringField('job')
-
+    photo = FileField()
 
 ALLOWED_EXTENSIONS = config.ALLOWED_EXTENSIONS
 
@@ -150,7 +149,7 @@ def assistants_changes(id):
         db.session.commit()
         return render_template("assistants.html")
 
-    if request.method == "PUT" and myform.validate_on_submit:
+    if request.method == "PUT" and myform.validate_on_submit():
 
         assistant_to_update = Assistant.query.get(id)
         if request.form:
@@ -183,14 +182,13 @@ def assistants_changes(id):
         db.session.commit()
         return "OK"
     else:
-        flash("Insert correct data!")
+        flash(myform.errors)
         return "ERROR"
 
 @app.route("/assistants/update", methods=["GET"])
 def assistants_update():
-    myform = UpdateForm(request.form)
     profile_id = request.args.get("id")
     profile_to_update = Assistant.query.get(profile_id)
-    return render_template("update_form.html", assistant=profile_to_update, form=myform)
+    return render_template("update_form.html", assistant=profile_to_update)
 
 
