@@ -23,8 +23,9 @@
         </p>
         <input name="photo" type="file" class="inputfile" id="file" accept="image/*">
         <label class="upload-label" for="file">Choose new profile photo (click to upload)<i class="fas fa-file-upload"></i></label>
-        <p>Curret job position. To update choose new positio from the list below. 
-          {{ assistant.job }}
+        <p>Curret job position: {{ assistant.job }} <br>
+          To update choose new positio from the list below. 
+          
         </p>
         <div class="selectdiv">
           <select id="sel" name="job">
