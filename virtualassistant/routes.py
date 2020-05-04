@@ -134,7 +134,7 @@ def assistants():
         assistantts_all = Assistant.query.order_by(Assistant.created_on.desc()).all()
         return render_template("assistants.html", assistants=assistantts_all, message="New assistant added!")
     else:
-        flash("Insert correct data!")
+        flash("Insert correct data! Use only letters")
         return redirect(url_for("assistants_create"))
 
 
@@ -182,7 +182,7 @@ def assistants_changes(id):
         db.session.commit()
         return "OK"
     else:
-        flash(myform.errors)
+        flash("Insert correct data! Use only letters")
         return "ERROR"
 
 @app.route("/assistants/update", methods=["GET"])
