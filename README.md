@@ -6,15 +6,19 @@ Project was created as a recruitment task and follows requirements given.
 ## Technologies used
 Project was built using Flask (microframework of Python programming language). Some additional Flask libraries were used as well such as:
 
-flask-sqlalchemy
-flask-migrate
-pillow
-flask-seeder
+* flask-sqlalchemy
+* flask-migrate
+* pillow
+* flask-seeder
+* etc.
 
 ## Setup
 Assuming you already have Python, pip and venv prepared. 
 * Install dependencies. Inside project directory run:
     `pip3 install -r requirements.txt`
+
+* Export flask application
+    `export FLASK_APP=run.py`
 
 * Prepare database with preared migrations.
     `flask db upgrade`
@@ -26,7 +30,7 @@ Assuming you already have Python, pip and venv prepared.
     `python3 run.py`
 
 * To start in production mode (debug = False) you need to run:
-    * `export FLASK_APP=run.py`
+
     * `export FLASK_ENVIRONMENT=production`
     * `flask run`
 
