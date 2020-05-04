@@ -23,6 +23,8 @@ Assuming you already have Python, pip and venv prepared.
 * Prepare database with preared migrations.
     `flask db upgrade`
 
+* Create an `uploads` directory in `static` folder. It will store thumbnails of profile photos. 
+
 * Populate the database using the prepared seeder. 
     `flask seed run`
 
