@@ -37,7 +37,7 @@ Assuming you already have Python, pip and venv prepared.
     * `flask run`
 
 ## Configuration
-You can find some configuration variables in config.py file. 
+You can find some configuration variables in config.py file (For example secret_key, which should be replaced for production environment).
 
 ## Testing
 Unittests are prepared in test_virtualassistant.py. To use them to test the app run:
